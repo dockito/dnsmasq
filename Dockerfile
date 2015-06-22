@@ -5,8 +5,14 @@ RUN apt-get update \
   && chmod +s /usr/sbin/dnsmasq \
   && chmod +s /sbin/start-stop-daemon
 
-RUN echo "address=/local.dockito.org/10.10.10.10" >> /etc/dnsmasq.conf
+RUN cp /etc/dnsmasq.conf /etc/dnsmasq.conf.orig
 
 EXPOSE 53
 
-CMD dnsmasq -d
+ENV DOCKITO_HOST local.dockito.org
+ENV DOCKITO_IP 10.10.10.10
+ENV DOCKITO_DNS 8.8.8.8
+
+COPY ./run.sh /
+RUN chmod +x /run.sh
+ENTRYPOINT ["/run.sh"]
